@@ -1,4 +1,5 @@
-from django.db.backends import sqlite3
+import sqlite3
+from database import create_connection
 
 from database import create_connection
 
