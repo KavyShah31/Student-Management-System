@@ -155,3 +155,46 @@ def update_student():
         print("\nThis email is already used by another student.")
     finally:
         connection.close()
+
+
+def delete_student():
+    try:
+        student_id = int(input("Enter Student ID to delete: "))
+    except ValueError:
+        print("Please enter a valid numeric ID.")
+        return
+
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "SELECT * FROM students WHERE id = ?",
+        (student_id,)
+    )
+    student = cursor.fetchone()
+
+    if student is None:
+        print("\nStudent not found!")
+        connection.close()
+        return
+
+    print("\nStudent Details:")
+    print(f"ID: {student[0]}")
+    print(f"Name: {student[1]}")
+    print(f"Email: {student[3]}")
+
+    confirm = input(
+        "\nAre you sure you want to delete this student? (yes/no): "
+    ).strip().lower()
+
+    if confirm == "yes":
+        cursor.execute(
+            "DELETE FROM students WHERE id = ?",
+            (student_id,)
+        )
+        connection.commit()
+        print("\nStudent deleted successfully!")
+    else:
+        print("\nDelete operation cancelled.")
+
+    connection.close()
