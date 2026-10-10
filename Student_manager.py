@@ -142,11 +142,19 @@ def update_student():
 
         cursor.execute("""
             UPDATE students
-            SET name = ?, age = ?, course = ?, semester = ?, marks = ?
+            SET name = ?, age = ?, email = ?, course = ?,
+                semester = ?, marks = ?
             WHERE id = ?
-        """, (name, age, email, course, semester, marks, student_id))
+        """, (
+            name,
+            age,
+            email,
+            course,
+            semester,
+            marks,
+            student_id
+        ))
 
-        
         connection.commit()
         print("\nStudent updated successfully!")
 
@@ -199,3 +207,36 @@ def delete_student():
         print("\nDelete operation cancelled.")
 
     connection.close()
+
+
+def student_statistics():
+    connection = create_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT 
+            COUNT(*),
+            AVG(marks),
+            MAX(marks),
+            MIN(marks)
+        FROM students
+    """)
+
+    statistics = cursor.fetchone()
+    connection.close()
+
+    total_students = statistics[0]
+    average_marks = statistics[1]
+    highest_marks = statistics[2]
+    lowest_marks = statistics[3]
+
+    print("\n====== student statistics ======")
+    print(f"Total Students: {total_students}")
+
+    if total_students == 0:
+        print("No students records available.")
+        return
+
+    print(f"Average Marks: {average_marks:.2f}")
+    print(f"Highest Marks: {highest_marks}")
+    print(f"Lowest Marks: {lowest_marks}")
